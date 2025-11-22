@@ -3,10 +3,10 @@ const { loadEnvFile } = require('node:process');
 loadEnvFile('./bg_rad_backend/keys.env');
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@raddatacluster.wnxk9ca.mongodb.net/?appName=radDataCluster`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@raddatacluster.wnxk9ca.mongodb.net/?appName=radDataCluster`
 
-const dbName = "radData";
-const colName = "testData";
+const dbName = "test";
+const colName = "radData";
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -26,7 +26,7 @@ async function dbItemFind(query){
     await client.connect();
     const dbCol = await client.db(dbName).collection(colName);
 
-    const cursor = await dbCol.find(query);
+    const cursor = await dbCol.find(query).limit(10);
     return await cursor.toArray();
 
   } catch(err){

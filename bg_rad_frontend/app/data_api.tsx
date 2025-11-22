@@ -8,7 +8,7 @@ export class DataApi{
   static apiRequestResult = new Array();
 
   private static url = "http://192.168.1.109:8000/radData/";
-  private static defaultID = '691c307cab488430c602f5b7';
+  private static defaultID = '692108cc3ddc29e8f6004b54';
   
   private static byIdEndpoint = "get/byID/";
   private static byFilterEndpoint = "get/byFilter/";

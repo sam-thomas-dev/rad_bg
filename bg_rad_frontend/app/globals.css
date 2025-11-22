@@ -32,6 +32,9 @@
   --transition-time-slow: 500ms;
   --transition-time-quick: 50ms;
 
+  --nav_btn_width_height: 2.5rem;
+  --nav_search_btn_height: 2rem;
+ 
   /* rem */
   font-size: 15px;
 }
@@ -116,8 +119,8 @@
   
 
   margin: 0px;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--nav_btn_width_height);
+  height: var(--nav_btn_width_height);
 
   background-position: center;
   background-repeat: no-repeat;
@@ -150,7 +153,7 @@
   background-color: var(--foreground);
   color: var(--mainText);
   
-  height: 2rem;
+  height: var(--nav_search_btn_height);
   padding-left: 0.5rem;
 
   transition: filter 50ms;
@@ -397,9 +400,10 @@
   
   display: grid;
   grid-template-columns: auto;
-  grid-auto-rows: 2.9rem;
+  grid-auto-rows: 3rem;
   gap: .6rem;
   justify-items: center;
+  white-space: nowrap;
 
   background-color: var(--background);
 }
@@ -457,6 +461,13 @@
   ;
 }
 
+#map {
+  height: 80%;
+  width: 40%;
+  z-index: 5;
+  border: 1px solid black;
+}
+
 
 @media(max-width: 800px){
   .locationInfoContainer{
@@ -473,6 +484,8 @@
     --row3-min-height: 24rem;
 
     --total-min-height: 60rem;
+
+    font-size: 12px;
   }
 
   .bgRadSubContainer:has(> .bgRadContainer:hover){

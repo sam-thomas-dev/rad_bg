@@ -3,7 +3,7 @@ import { useState } from "react";
 import { DataApi } from "./data_api";
 import { LocationRecord } from "./locationRecord";
 import { useEffect } from "react";
- 
+
 
 // --- React Componenets ---
 
@@ -16,6 +16,7 @@ export default function MainContainer() {
   return(
     <div className="siteCont">
       <main className="mainContainer">
+
         <FilterContainer setSelectedRecord={setSelectedRecord} filterShown={filterShown} setFilterShown={setFilterShown}/>
         <BlackOutDiv filterShown={filterShown} setFilterShown={setFilterShown}/>
         
@@ -82,6 +83,24 @@ function ResultGrid({setSelectedRecord, setFilterShown}:{[key:string]:any}){
 }
 
 function SeachResultItem({ locationObj, setSelectedRecord, setFilterShown }:{[key:string]:any} ){
+  if(`${locationObj.name} ${locationObj.subNational} ${locationObj.country}`.length > 30){
+    return(
+      <div className="reusltItemCont" onClick={(element) => {setSelectedRecord(locationObj); setFilterShown(0)}}>
+        <p className="resultName">{(locationObj.name.length > 15) ? `${locationObj.name.substring(0, 14)}...` : locationObj.name}</p>
+        <p className="resultLocation">{
+            ((locationObj.subNational.length > 15) 
+              ? `${locationObj.subNational.substring(0, 14)}... ` 
+              : locationObj.subNational) 
+            + ", "
+            + ((locationObj.country.length > 15) 
+              ? `${locationObj.country.substring(0, 14)}... ` 
+              : locationObj.country)
+          }
+        </p>
+      </div>
+    );
+  }
+  
   return(
     <div className="reusltItemCont" onClick={(element) => {setSelectedRecord(locationObj); setFilterShown(0)}}>
       <p className="resultName">{locationObj.name}</p>
@@ -144,14 +163,19 @@ function BgRadContainer({ selectedRecord }:{[key:string]:any} ){
   );
 }
 
+// function MapLeaflet(){
+//   return <div id="map"></div>
+// }
+
 function LocationInfoContainer({ selectedRecord }:{[key:string]:any} ){
 
   return(
     <div className="locationInfoContainer">
       <div className="locationInfoSubContainer">
-        <p className="locationName">{selectedRecord.name}</p>
+        <p className="locationName">{(selectedRecord.name.length > 16) ? `${selectedRecord.name.substring(0, 15)}...` : selectedRecord.name}</p>
         <p className="locationSubNat">{selectedRecord.subNational + ", " + selectedRecord.country}</p>
       </div>
+      {/* <MapLeaflet/> */}
     </div>
   );
 }
