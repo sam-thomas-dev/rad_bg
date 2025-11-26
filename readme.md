@@ -23,7 +23,7 @@ The API was created using the express js web app framework. Express was used to 
 ## UI / Frontend
 The UI was created using the next js react framework. React was used to define the components of the site and connect the UI with the API specified above. With components being updated through react hooks, following the recommended best practices and processes outlined in the [react documentation](https://react.dev/learn/thinking-in-react).
 
-The UI enables users to search locations via keywords, and select their desired location, after which the UI will then display the background radiation as a figure, place it on a scale for safe dose, and display other supplemental information about the location including its position on a map, this functionality is deffined [here](./bg_rad_frontend/app/page.tsx). Upon loading the site, if records exist in the same country as the user, the record closest to the user's approximate location is shown, otherwise the default location is shown. The main features implemented in the UI are as follows:
+The UI enables users to search locations via keywords, and select their desired location, after which the UI will then display the background radiation as a figure, place it on a scale for safe dose, and display other supplemental information about the location including its position on a map, this functionality is defined [here](./bg_rad_frontend/app/page.tsx). Upon loading the site, if records exist in the same country as the user, the record closest to the user's approximate location is shown, otherwise the default location is shown. The main features implemented in the UI are as follows:
 
 - Location shown via map, implemented using the open-source [Leaflet](https://leafletjs.com/) react library.
 
