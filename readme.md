@@ -6,9 +6,9 @@ Inspiration for the app came from a Kyle Hill video titled "[Big Nuclear’s Big
 
 ## Document Content
 This document outlines how the app was created, its main features, and a general technical overview regarding how said features were implemented. It contains the following sections:
-- Main Components
-- API / Backend
-- UI / Frontend
+- [Main Components](#main-components)
+- [API / Backend](#api--backend)
+- [UI / Frontend](#ui--frontend)
 
 ## Main Components
 The technical details of the app can be broken down into two main components, the UI and API (or frontend and backend respectively). In this case, the [API / backend](./bg_rad_backend/) is used to submit queries to the database or get user information using the provided endpoints, with the [UI / frontend](./bg_rad_frontend/) being used by the user to select the information to query. 
