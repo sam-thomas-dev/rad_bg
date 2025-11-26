@@ -73,6 +73,13 @@ function InfoPannel({ dkModeOn, setDkModeOn, infoPannelShown }:{[key:string]:any
           Germany, Belgium, Netherlands, Denmark, Norway, Sweden, Finland, Greece, Switzerland
         </p>
       </div>
+
+      <div>
+        <p className="infoSubHeading">Github:</p>
+        <ul>
+          <li><a className="link" href="https://github.com/sam-thomas-dev/rad_bg">Repository for frontend & backend of site</a></li>
+        </ul>
+      </div>
       
       <div>
         <p className="infoSubHeading">Resources:</p>
