@@ -75,10 +75,7 @@ function InfoPannel({ dkModeOn, setDkModeOn, infoPannelShown }:{[key:string]:any
       </div>
 
       <div>
-        <p className="infoSubHeading">Github:</p>
-        <ul>
-          <li><a className="link" href="https://github.com/sam-thomas-dev/rad_bg">Repository for frontend & backend of site</a></li>
-        </ul>
+        <a className="link infoSubHeading" href="https://github.com/sam-thomas-dev/rad_bg">GitHub</a>
       </div>
       
       <div>
