@@ -4,14 +4,29 @@ const Location = require("../../tools/location.js")
 const ipLocMethods = require('./ipStackRequest');
 
 
+const errorLocationObj = new Location(
+  "-1", 
+  "Error", 
+  "records found", 
+  "no", 
+  0, 
+  "xXx", 
+  dbMethods.errorObj.latitude, 
+  dbMethods.errorObj.longitude
+);
+
 /**
  * Finds item in DB with id specified
  * @param {string} id id of return item
  * @returns {Object} location object representing item
  */
 const getLocationByID = async (id) => {
-  return await dbMethods.selectItemById(id).then(result =>{
-    
+  try{
+    const result = await dbMethods.selectItemById(id) ?? [dbMethods.errorObj];
+    if(!result){
+      return errorLocationObj;
+    }
+
     if(result.length > 0){
       result = result[0];
       
@@ -26,9 +41,12 @@ const getLocationByID = async (id) => {
         result.longitude
       );
     } else{
-      return {error: `No object with id:'${id}' found`};
+      return errorLocationObj;
     }
-  }).catch(console.error);
+
+  } catch(error){
+    console.log(error);
+  }
 };
 
 /**
@@ -38,19 +56,27 @@ const getLocationByID = async (id) => {
  */
 const getLocationsBySubString = async (subString) => {
   subString = subString.toLocaleLowerCase();
-  
-  return await dbMethods.selectItemsBySubString(subString).then(result => {
-    return result.map(item => new Location(
-      item._id.toString(),
-      item.name,
-      item.country,
-      item.subNational,
-      item.radFig,
-      item.radUnit,
-      item.latitude,
-      item.longitude
-    ));
-  }).catch(console.error);
+
+  try{
+    const result = await dbMethods.selectItemsBySubString(subString) ?? [dbMethods.errorObj];
+    if(!result){
+      return [errorLocationObj];
+    } else{
+      return result.map(item => new Location(
+        item._id.toString(),
+        item.name,
+        item.country,
+        item.subNational,
+        item.radFig,
+        item.radUnit,
+        item.latitude,
+        item.longitude
+      ));
+    }
+
+  } catch(error){
+    console.log(error);
+  }
 }
 
 /**
@@ -59,35 +85,42 @@ const getLocationsBySubString = async (subString) => {
  * @returns {Object} result object of function
  */
 const getLocationByIp = async (ip) => {
-  const ipReturn = await ipLocMethods.fetchUserLocation(ip);
+  try{
+    const ipReturn = await ipLocMethods.fetchUserLocation(ip) ?? ipLocMethods.errorArray;
 
-  if(ipReturn.length == 3){
-    const dbReturn = await dbMethods.selectItemByCountry(ipReturn[2]); 
-    
-    let minValue = 999999;
-    let minObj;
-
-    for(const item of dbReturn){
-      let totalDif = ipLocMethods.getTotalCoordDif([ipReturn[0], ipReturn[1]], [item.latitude, item.longitude]);
-      if(totalDif < minValue){
-        minValue = totalDif;
-        minObj = item;
-      }
+    if(!ipReturn || ipReturn[3] == "error"){
+      return errorLocationObj;
     }
 
-    return new Location(
-      minObj._id.toString(),
-      minObj.name,
-      minObj.country,
-      minObj.subNational,
-      minObj.radFig,
-      minObj.radUnit,
-      minObj.latitude,
-      minObj.longitude
-    );
+    const dbReturn = await dbMethods.selectItemByCountry(ipReturn[2]) ?? [dbMethods.errorObj];
+    if(!dbReturn){
+      return errorLocationObj;
+    } else{
+      let minValue = 999999;
+      let minObj;
 
-  } else{
-    return {error: "no records in user country."};
+      for(const item of dbReturn){
+        let totalDif = ipLocMethods.getTotalCoordDif([ipReturn[0], ipReturn[1]], [item.latitude, item.longitude]);
+        if(totalDif < minValue){
+          minValue = totalDif;
+          minObj = item;
+        }
+      }
+
+      return new Location(
+        minObj._id.toString(),
+        minObj.name,
+        minObj.country,
+        minObj.subNational,
+        minObj.radFig,
+        minObj.radUnit,
+        minObj.latitude,
+        minObj.longitude
+      );
+    }
+
+  } catch(error){
+    console.log(error);
   }
 }
 
