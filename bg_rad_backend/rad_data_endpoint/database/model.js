@@ -26,7 +26,6 @@ const getLocationByID = async (id) => {
     if(!result){
       return errorLocationObj;
     }
-
     if(result.length > 0){
       result = result[0];
       
@@ -92,7 +91,8 @@ const getLocationByIp = async (ip) => {
       return errorLocationObj;
     }
 
-    const dbReturn = await dbMethods.selectItemByCountry(ipReturn[2]) ?? [dbMethods.errorObj];
+    const dbReturn = await dbMethods.selectItemsByCountry(ipReturn[2]) ?? [dbMethods.errorObj];
+    
     if(!dbReturn){
       return errorLocationObj;
     } else{
@@ -106,6 +106,8 @@ const getLocationByIp = async (ip) => {
           minObj = item;
         }
       }
+
+      console.log(`minObj: ${minObj}`);
 
       return new Location(
         minObj._id.toString(),

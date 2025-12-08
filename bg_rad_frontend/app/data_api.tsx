@@ -1,4 +1,3 @@
-import { resume } from "react-dom/server";
 import { LocationRecord } from "./locationRecord";
 import { UserIp } from "./user_ip";
 
@@ -6,8 +5,6 @@ export class DataApi{
   private constructor(){
     console.log('This class is non-instantiable.')
   }
-
-  static apiRequestResult = new Array();
 
   private static defLat = -25.034912926102326;
   private static deflong = 134.27791178447652;
@@ -19,8 +16,10 @@ export class DataApi{
   private static byFilterEndpoint = "get/byFilter/";
   private static byIpEndpoint = "get/byIP/";
 
-  static loadingLocationObj = new LocationRecord("-1", "Loading", "unknown", "unknown", 0, "", this.defLat, this.deflong);
   private static errorLocationObj = new LocationRecord("-1", "Error", "not found", "record", 0, "", this.defLat, this.deflong);
+  static loadingLocationObj = new LocationRecord("-1", "Loading", "unknown", "unknown", 0, "", this.defLat, this.deflong);
+
+  static apiRequestResult = [this.loadingLocationObj];
 
   /**
    * Performs fetch request for resource specified
@@ -91,10 +90,11 @@ export class DataApi{
     try{
       const result = await this.apiFetch(this.url, this.byFilterEndpoint, filter) ?? {selectedLocations: []};
       if(!result){
-        this.apiRequestResult = new Array();
+        this.apiRequestResult = [];
       } else{
         this.apiRequestResult = result.selectedLocations; 
       }
+      
     } catch(error){
       console.log(error);
     }

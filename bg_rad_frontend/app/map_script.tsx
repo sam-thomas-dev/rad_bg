@@ -1,20 +1,18 @@
-import { MapContainer, Marker, Popup, TileLayer, Tooltip, useMapEvents } from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMap} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import { useMap } from "react-leaflet";
+import { LatLngExpression } from "leaflet";
 
-function CenterMap({pos, scale}:{[key:string]:any}){
+function CenterMap({pos, scale}:{pos:LatLngExpression, scale:number}){
     const map = useMap();
     if(map.getSize().x > 1){
-        const map = useMap();
         map.setView(pos, scale)
     }
     return<></>
 }
 
-export default function leafletMap(params: any){
-    const { pos, scale } = params;
+export default function leafletMap({pos, scale}:{pos:LatLngExpression, scale:number}){
     return (
         <MapContainer 
             center={pos}

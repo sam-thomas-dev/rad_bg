@@ -1,7 +1,9 @@
 // loads environment variables from spcified location
 const { loadEnvFile } = require('node:process');
 loadEnvFile('./bg_rad_backend/keys.env');
+
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const DbRecord = require('./dbRecord');
 
 class mongoDbApi{
   constructor(){
@@ -15,16 +17,7 @@ class mongoDbApi{
   static #defLat = -25.034912926102326;
   static #deflng = 134.27791178447652;
 
-  static errorObj = { 
-    _id: -1, 
-    name: "Error", 
-    country: "records found", 
-    subNational: "no", 
-    radFig: "0", 
-    radUnit: "xXx", 
-    latitude: this.#defLat, 
-    longitude: this.#deflng
-  };
+  static errorObj = new DbRecord(new ObjectId('000000000000000000000000'), "Error", "records found", "no", 0, "", this.#defLat, this.#deflng);
 
   static #client = new MongoClient(this.#uri, {
     serverApi: {
@@ -39,10 +32,10 @@ class mongoDbApi{
    * Performs the db.find command on database using query specified
    * @param {Object} query mongoDB query used to find items
    * @param {number} itemLimit max number of items to return
-   * @returns array of items found
+   * @returns {[DbRecord]} array of items found
    */
   static dbItemFind = async (query, itemLimit) => {
-    const uri = `mongodb+srv://mainUser:${process.env.DB_PASS}@raddatacluster.wnxk9ca.mongodb.net/?appName=radDataCluster`;
+    // const uri = `mongodb+srv://mainUser:${process.env.DB_PASS}@raddatacluster.wnxk9ca.mongodb.net/?appName=radDataCluster`;
     
     try {
       await this.#client.connect();
@@ -119,7 +112,7 @@ class mongoDbApi{
    * @param {string} countryName name of country as string
    * @returns {Array} array containing all items returned by selection
    */
-  static selectItemByCountry = async (countryName) => {
+  static selectItemsByCountry = async (countryName) => {
     const query = {country: countryName};
     
     try{

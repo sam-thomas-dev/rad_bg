@@ -1,33 +1,32 @@
 "use client";
-import { useMemo, useState } from "react";
-import { DataApi } from "./data_api";
-import { useEffect } from "react";
+import { useMemo, useState, Dispatch, SetStateAction, useEffect } from "react";
 import dynamic from "next/dynamic";
+
+import { DataApi } from "./data_api";
+import { LocationRecord } from "./locationRecord";
 
 // --- React Componenets ---
 
 export default function MainContainer() {
 
   // site wide state variables
-  let [ selectedRecord, setSelectedRecord ] = useState(DataApi.loadingLocationObj);
-  let [ filterShown, setFilterShown ] = useState(0);
-  let [ infoPannelShown, setInfoPannelShown] = useState(0);
-  let [ dkModeOn, setDkModeOn ] = useState(true);
+  const [ selectedRecord, setSelectedRecord ] = useState(DataApi.loadingLocationObj);
+  const [ filterShown, setFilterShown ] = useState(0);
+  const [ infoPannelShown, setInfoPannelShown] = useState(0);
+  const [ dkModeOn, setDkModeOn ] = useState(true);
   
   // ran once after initial document load
   useEffect(() => {
     DataApi.requestRecordByIp()
       .then(() => setSelectedRecord(DataApi.apiRequestResult[0]))
-      .catch(err => {
+      .catch(() => {
         DataApi.requestDefaultRecord()
           .then(() => setSelectedRecord(DataApi.apiRequestResult[0]))
       })
   }, []);
 
   useEffect(() => {
-    const themePref = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setHtmlDataAtr(themePref);
-    setDkModeOn(themePref);
+    setThemeFromUserPref(setDkModeOn);
   }, []);
 
   // main content of site
@@ -50,7 +49,12 @@ export default function MainContainer() {
   ); 
 }
 
-function InfoPannel({ dkModeOn, setDkModeOn, infoPannelShown }:{[key:string]:any}){
+function InfoPannel({ dkModeOn, setDkModeOn, infoPannelShown }:{
+    dkModeOn:boolean, 
+    setDkModeOn:Dispatch<SetStateAction<boolean>>, 
+    infoPannelShown:number
+  }
+){
   const elementStyle = (infoPannelShown) ? {} : {display: 'none'}; 
   
   return(
@@ -95,7 +99,7 @@ function InfoPannel({ dkModeOn, setDkModeOn, infoPannelShown }:{[key:string]:any
             type="checkbox"
             name="input3"
             checked={dkModeOn} 
-            onChange={elmt => {setHtmlDataAtr(!dkModeOn); setDkModeOn(!dkModeOn);}}
+            onChange={() => {setHtmlDataAtr(!dkModeOn); setDkModeOn(!dkModeOn);}}
           />
           <span className="slider round"></span>
         </label>
@@ -105,10 +109,15 @@ function InfoPannel({ dkModeOn, setDkModeOn, infoPannelShown }:{[key:string]:any
   );
 }
 
-function FilterContainer({ setSelectedRecord, filterShown, setFilterShown }:{[key:string]:any}){
-  let [ filterText, setFilterText ] = useState('');
-  let [ queryResult, setQueryResult ] = useState(DataApi.apiRequestResult);
-  let elementStyle = (filterShown)? {translate: "0px 0px"} : {translate: "-100% 0px"};
+function FilterContainer({ setSelectedRecord, filterShown, setFilterShown }:{ 
+    setSelectedRecord:Dispatch<SetStateAction<LocationRecord>>, 
+    filterShown:number, 
+    setFilterShown:Dispatch<SetStateAction<number>>
+  }
+){
+  const [ filterText, setFilterText ] = useState('');
+  const [ queryResult, setQueryResult ] = useState(DataApi.apiRequestResult);
+  const elementStyle = (filterShown)? {translate: "0px 0px"} : {translate: "-100% 0px"};
 
   return(
     <div className="filterContainer" style={elementStyle}>
@@ -119,7 +128,12 @@ function FilterContainer({ setSelectedRecord, filterShown, setFilterShown }:{[ke
   );
 }
 
-function FilterLocationBar({ filterText, setFilterText, setQueryResult }:{[key:string]:any} ){
+function FilterLocationBar({ filterText, setFilterText, setQueryResult }:{ 
+    filterText:string, 
+    setFilterText:Dispatch<SetStateAction<string>>, 
+    setQueryResult:Dispatch<SetStateAction<LocationRecord[]>>
+  }
+){
   return(
     <div className="filterSearchBarCont">
       <input 
@@ -141,11 +155,16 @@ function FilterLocationBar({ filterText, setFilterText, setQueryResult }:{[key:s
   );
 }
 
-function ResultGrid({ setSelectedRecord, setFilterShown, queryResult }:{[key:string]:any}){  
+function ResultGrid({ setSelectedRecord, setFilterShown, queryResult }:{ 
+    setSelectedRecord:Dispatch<SetStateAction<LocationRecord>>, 
+    setFilterShown:Dispatch<SetStateAction<number>>, 
+    queryResult:LocationRecord[]; 
+  }
+){  
   return(
     <div className="resultGrid">
       { (queryResult.length > 0)
-        ? queryResult.map((item:object, index:number) => (
+        ? queryResult.map((item:LocationRecord, index:number) => (
             <SeachResultItem 
               locationObj={item}
               key={index} 
@@ -159,10 +178,15 @@ function ResultGrid({ setSelectedRecord, setFilterShown, queryResult }:{[key:str
   );
 }
 
-function SeachResultItem({ locationObj, setSelectedRecord, setFilterShown }:{[key:string]:any} ){
+function SeachResultItem({ locationObj, setSelectedRecord, setFilterShown }:{ 
+    locationObj:LocationRecord, 
+    setSelectedRecord:Dispatch<SetStateAction<LocationRecord>>, 
+    setFilterShown:Dispatch<SetStateAction<number>>
+  }
+){
   if(`${locationObj.name} ${locationObj.subNational} ${locationObj.country}`.length > 30){
     return(
-      <div className="reusltItemCont" onClick={(element) => {setSelectedRecord(locationObj); setFilterShown(0)}}>
+      <div className="reusltItemCont" onClick={() => {setSelectedRecord(locationObj); setFilterShown(0)}}>
         <p className="resultName">{(locationObj.name.length > 15) ? `${locationObj.name.substring(0, 14)}...` : locationObj.name}</p>
         <p className="resultLocation">{
             ((locationObj.subNational.length > 15) 
@@ -179,43 +203,53 @@ function SeachResultItem({ locationObj, setSelectedRecord, setFilterShown }:{[ke
   }
   
   return(
-    <div className="reusltItemCont" onClick={(element) => {setSelectedRecord(locationObj); setFilterShown(0)}}>
+    <div className="reusltItemCont" onClick={() => {setSelectedRecord(locationObj); setFilterShown(0)}}>
       <p className="resultName">{locationObj.name}</p>
       <p className="resultLocation">{locationObj.subNational + ", "+ locationObj.country}</p>
     </div>
   );
 }
 
-function BlackOutDiv({ filterShown, setFilterShown, setInfoPannelShown, infoPannelShown}:{[key:string]:any}){  
-  let elemenetStyle = (filterShown || infoPannelShown)? {opacity: "60%", zIndex:"2"} : {opacity: "0%", zIndex:"0"}
-  return <div className="blackOutDiv" style={elemenetStyle} onClick={element => {setFilterShown(0); setInfoPannelShown(0);}}/>
+function BlackOutDiv({ filterShown, setFilterShown, setInfoPannelShown, infoPannelShown}:{ 
+    filterShown:number, 
+    setFilterShown:Dispatch<SetStateAction<number>>, 
+    setInfoPannelShown:Dispatch<SetStateAction<number>>, 
+    infoPannelShown:number
+  }
+){  
+  const elemenetStyle = (filterShown || infoPannelShown)? {opacity: "60%", zIndex:"2"} : {opacity: "0%", zIndex:"0"}
+  return <div className="blackOutDiv" style={elemenetStyle} onClick={() => {setFilterShown(0); setInfoPannelShown(0);}}/>
 }
 
-function MenuBtn({ setFilterShown }:{[key:string]:any}){
+function MenuBtn({ setFilterShown }:{ setFilterShown:Dispatch<SetStateAction<number>> }){
   return(
     <div className="navFlx1">
-      <button className="menuBtn" onClick={e => setFilterShown(1)}/>
+      <button className="menuBtn" onClick={() => setFilterShown(1)}/>
     </div>
   );
 }
 
-function SearchBarBtn({ setFilterShown }:{[key:string]:any}){
+function SearchBarBtn({ setFilterShown }:{ setFilterShown:Dispatch<SetStateAction<number>> }){
   return(
     <div className="navFlx2">
-      <input name="input2" type="text" className="searchBarBtn" placeholder="Search" readOnly onClick={e => setFilterShown(1)}/>
+      <input name="input2" type="text" className="searchBarBtn" placeholder="Search" readOnly onClick={() => setFilterShown(1)}/>
     </div>
   );
 }
 
-function InfoBtn({setInfoPannelShown}:{[key:string]:any}){
+function InfoBtn({ setInfoPannelShown }:{ setInfoPannelShown:Dispatch<SetStateAction<number>> }){
   return(
     <div className="navFlx3">
-      <button className="infoBtn" onClick={e => setInfoPannelShown(1)}/> 
+      <button className="infoBtn" onClick={() => setInfoPannelShown(1)}/> 
     </div>
   );
 }
 
-function NavContainer({ setFilterShown, setInfoPannelShown }:{[key:string]:any}){ 
+function NavContainer({ setFilterShown, setInfoPannelShown }:{ 
+    setFilterShown:Dispatch<SetStateAction<number>>, 
+    setInfoPannelShown:Dispatch<SetStateAction<number>>
+  }
+){ 
   return(
     <nav className="navContainer">
       <MenuBtn setFilterShown={setFilterShown}/>
@@ -225,7 +259,7 @@ function NavContainer({ setFilterShown, setInfoPannelShown }:{[key:string]:any})
   );
 }
 
-function BgRadContainer({ selectedRecord }:{[key:string]:any} ){
+function BgRadContainer({ selectedRecord }:{ selectedRecord:LocationRecord }){
   return (
     <div className="bgRadContainer">
       <div className="bgRadSubContainer">
@@ -251,14 +285,14 @@ function BgRadContainer({ selectedRecord }:{[key:string]:any} ){
   );
 }
 
-function LocationInfoContainer({ selectedRecord }:{[key:string]:any} ){
+function LocationInfoContainer({ selectedRecord }:{ selectedRecord:LocationRecord }){
   return(
     <div className="locationInfoContainer">
       <div className="locationInfoSubContainer">
         <p className="locationName">{(selectedRecord.name.length > 16) ? `${selectedRecord.name.substring(0, 15)}...` : selectedRecord.name}</p>
         <p className="locationSubNat">{selectedRecord.subNational + ", " + selectedRecord.country}</p>
       </div>
-      {createMap(selectedRecord.latitude, selectedRecord.longitude)}
+      {CreateMap(selectedRecord.latitude, selectedRecord.longitude)}
     </div>
   );
 }
@@ -269,17 +303,17 @@ function AnimatedGradient(){
 
 // --- Non-react Functions ---
 
-const createMap = (latitude:number, longitude:number) => {
-    const MapLeaflet = useMemo(() => dynamic(
-      () => import('./map_script'),
-      { 
-        loading: () => <div className="mapLoading">map loading...</div>,
-        ssr: false
-      }
-    ), [])
+const CreateMap = (latitude:number, longitude:number) => {
+  const MapLeaflet = useMemo(() => dynamic(
+    () => import('./map_script'),
+    { 
+      loading: () => <div className="mapLoading">map loading...</div>,
+      ssr: false
+    }
+  ), [])
 
-    return <MapLeaflet pos={[latitude, longitude]} scale={12}/>;
-  }
+  return <MapLeaflet pos={[latitude, longitude]} scale={12}/>;
+}
 
 const setHtmlDataAtr = (boolValue:boolean) => {
   const htmlTag = document.getElementById("htmlTag");
@@ -288,6 +322,14 @@ const setHtmlDataAtr = (boolValue:boolean) => {
     console.log("Error: html tag is null")
   } else{
     htmlTag.dataset.dkset = (boolValue).toString();
+  }
+}
+
+const setThemeFromUserPref = (setDkModeOn:Dispatch<SetStateAction<boolean>>) => {
+  const themePref = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(!themePref){
+    setHtmlDataAtr(themePref);
+    setDkModeOn(themePref);
   }
 }
 
