@@ -1,7 +1,8 @@
 ## Synopsis
 This web app is used to look up the average yearly background radiation dose in a city stemming from ground composition alone. It was created using the MERN stack (mongodb, express js, react, and node js). References for the sources used to create the dataset can be found in app, for the final dataset used, click [here](./documentation_resources/final_dataset.csv).
 
-[**_Link To Deployed Site_**](https://bg-rad-frontend.samsjourniesw.workers.dev/)<br>
+[**_Link To Deployed Site_**](https://bg-rad-frontend.samsjourniesw.workers.dev/), hosted using Cloudflare Pages.<br>
+Note, this repository does not reflect the changes made to the project required to host both the API & frontend on cloudflare pages.<br>
 
 **_Inspiration_**<br>
 Inspiration for the app came from a video titled "[Big Nuclear’s Big Mistake - Linear No-Threshold](https://www.youtube.com/watch?v=gzdLdNRaPKc)", in which the linear no-threshold model for safe radiation exposure is discussed. The video explains that despite being discredited by multiple scientific reports from credible publications, the model is still the basis for most radiation based safety and policy decisions. Put simply, the model implies that any exposure to radiation, no matter the dose, increases a person's risk of radiation based illness (ie, there is no safe exposure threshold). In the video, the example is presented that, if this were the case, we would likely see an increase in cancer rates or radiation based illnesses in cities that have higher average background radiation doses, but we don’t. After hearing this, I wanted to know the average annual background radiation dose in my own city, and realised the data for each country was spread over multiple not easy to parse sources. To solve this issue, I decided to create a web app to centralise the data, and display it in a useful and easily searchable form.
