@@ -9,7 +9,7 @@ export class DataApi{
   private static defLat = -25.034912926102326;
   private static deflong = 134.27791178447652;
 
-  private static url = "http://192.168.1.201:8000/radData/";
+  private static url = "http://localhost:8000/radData/";
   private static defaultID = '692108cc3ddc29e8f6004b54';
   
   private static byIdEndpoint = "get/byID/";
@@ -20,6 +20,10 @@ export class DataApi{
   static loadingLocationObj = new LocationRecord("-1", "Loading", "unknown", "unknown", 0, "", this.defLat, this.deflong);
 
   static apiRequestResult = new Array<LocationRecord>;
+
+  private static requestProcessed = true;
+  static getRequestProcessed = () => this.requestProcessed;
+  static setRequestProcessed = (reqStatus:boolean) => {this.requestProcessed = reqStatus};
 
   /**
    * Performs fetch request for resource specified
@@ -87,6 +91,7 @@ export class DataApi{
   }
 
   static requestRecordsByFilter = async (filter:string) => {
+    this.setRequestProcessed(false);
     try{
       const result = await this.apiFetch(this.url, this.byFilterEndpoint, filter) ?? {selectedLocations: []};
       if(!result){
@@ -97,6 +102,19 @@ export class DataApi{
       
     } catch(error){
       console.log(error);
+    }
+  }
+
+  /**
+   * Checks if the returned record array contains an error record
+   * @returns false if apiRequestResult contains an error record
+   */
+  static checkResultForError = () => {
+    if(this.apiRequestResult.length == 0) return true;
+    if(['000000000000000000000000', '-1'].includes(this.apiRequestResult[0].id)){
+      return false;
+    } else{
+      return true;
     }
   }
 }

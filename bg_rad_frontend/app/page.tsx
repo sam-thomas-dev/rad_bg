@@ -117,7 +117,7 @@ function FilterContainer({ setSelectedRecord, filterShown, setFilterShown }:{
 ){
   const [ filterText, setFilterText ] = useState('');
   const [ queryResult, setQueryResult ] = useState(DataApi.apiRequestResult);
-  const elementStyle = (filterShown)? {translate: "0px 0px"} : {translate: "-100% 0px"};
+  const elementStyle = (filterShown)? {translate: "0px 0px"} : {translate: "-200% 0px"};
 
   return(
     <div className="filterContainer" style={elementStyle}>
@@ -142,14 +142,20 @@ function FilterLocationBar({ filterText, setFilterText, setQueryResult }:{
         name="input1"
         placeholder="Search"
         value={filterText}
-        onChange={async (element) => {
-          setFilterText(element.target.value);
-          if(element.target.value.trim().length > 0){ 
-            DataApi.requestRecordsByFilter(element.target.value)
-              .then(() => setQueryResult(DataApi.apiRequestResult))
-            ; 
+        onChange={
+          async (element) => {
+            setFilterText(element.target.value);
+
+            if(element.target.value.trim().length > 0 && DataApi.getRequestProcessed()){ 
+              DataApi.requestRecordsByFilter(element.target.value)
+                .then(() => {
+                  setQueryResult(DataApi.apiRequestResult); 
+                  DataApi.setRequestProcessed(true);
+                })
+              ; 
+            }
           }
-        }}
+        }
       />
     </div>
   );
@@ -163,7 +169,7 @@ function ResultGrid({ setSelectedRecord, setFilterShown, queryResult }:{
 ){  
   return(
     <div className="resultGrid">
-      { (queryResult.length > 0)
+      { (queryResult.length > 0 && DataApi.checkResultForError())
         ? queryResult.map((item:LocationRecord, index:number) => (
             <SeachResultItem 
               locationObj={item}

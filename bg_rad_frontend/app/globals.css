@@ -664,6 +664,10 @@ input:checked + .slider:before {
     font-size: 12px;
   }
 
+  .infoCont{
+    width: 95%;
+  }
+
   .map, .mapLoading{
     display: none;
   }
