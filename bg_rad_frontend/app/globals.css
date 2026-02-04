@@ -5,11 +5,11 @@
   --row1-height: 3.3rem;
   --row3-height: 40%;
 
-  --row1-min-height: 3.3rem;
-  --row2-min-height: 23rem;
-  --row3-min-height: 24rem;
+  --row1-min-height: 5%;
+  --row2-min-height: 50%;
+  --row3-min-height: 45%;
 
-  --total-min-height: 50.3rem;
+  --total-min-height: 60rem;
 
   --transition-time-slow: 500ms;
   --transition-time-quick: 50ms;
@@ -364,8 +364,8 @@ input:checked + .slider:before {
   background-color: var(--locationBgColor);
 
   width: 90%;
-  height: 50%;
-  max-width: 50rem;
+  height: 80%;
+  max-width: 50rem; 
 
   text-align: center;
   
@@ -645,23 +645,23 @@ input:checked + .slider:before {
 }
 
 
-@media(max-width: 800px){
+/* @media(max-width: 800px){
   .locationInfoContainer{
     background-position: -15rem -8rem;
   }
-}
+} */
 
-@media(max-height: 1920px) and (max-width: 1080px){
+@media(max-width: 1800px){
   :root{
     --row1-height: 3.3rem;
-    --row3-height: 55%;
-    --row1-min-height: 3.3rem;
-    --row2-min-height: 18rem;
-    --row3-min-height: 24rem;
+    --row3-height: 45%;
+    --row1-min-height: 5%;
+    --row2-min-height: 50%;
+     --row3-min-height: 45%;
 
-    --total-min-height: 60rem;
+    --total-min-height: 1000px;
 
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .infoCont{
@@ -669,7 +669,8 @@ input:checked + .slider:before {
   }
 
   .map, .mapLoading{
-    display: none;
+    height: 80%;
+    width: 30%;
   }
 
   .bgRadSubContainer:has(> .bgRadContainer:hover){
@@ -690,23 +691,34 @@ input:checked + .slider:before {
   }
 
   .mainContainer:has(> .bgRadContainer:hover){
-    grid-template: 3.3rem auto 57% / auto;
+    grid-template: 3.3rem auto 47% / auto;
   }
 
   .locationName{
-    font-size: 3.5rem;
-    font-weight: 550;
+    font-size: 3.5rem;  
+    font-weight: 550; 
   }
 
   .locationSubNat{
-    font-size: 1.5rem;
-  }
+    font-size: 1.5rem; 
+  } 
 
   .radContTitle{
     font-size: 2rem;
   }
 
   .filterContainer{
+    grid-template: 11% 2% 87% / auto; 
+  }
+  
+}
+
+@media (max-width: 1080px){
+  .filterContainer{
     width: 80%;
+  }
+
+  .map, .mapLoading{
+    display: none;
   }
 }
